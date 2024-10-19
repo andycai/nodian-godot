@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="..."]
+[gd_scene load_steps=4 format=3 uid="uid://3fq8ok3j5k11"]
 
-[ext_resource type="PackedScene" uid="..." path="res://Scenes/files_manager.tscn" id="1_..."]
-[ext_resource type="PackedScene" uid="..." path="res://Scenes/MarkdownEditor.tscn" id="2_..."]
+[ext_resource type="PackedScene" uid="uid://dj4u6kbp6yj40" path="res://Scenes/files_manager.tscn" id="1_..."]
+[ext_resource type="PackedScene" path="res://Scenes/MarkdownEditor.tscn" id="2_..."]
+[ext_resource type="Script" path="res://Scenes/Application.cs" id="3_..."]
 
 [node name="Application" type="Control"]
 layout_mode = 3
@@ -10,6 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("3_...")
 
 [node name="HSplitContainer" type="HSplitContainer" parent="."]
 layout_mode = 1
@@ -21,10 +23,11 @@ grow_vertical = 2
 
 [node name="FilesManager" parent="HSplitContainer" instance=ExtResource("1_...")]
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.2
 
 [node name="MarkdownEditor" parent="HSplitContainer" instance=ExtResource("2_...")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.8
+
+[connection signal="FileSelected" from="HSplitContainer/FilesManager" to="HSplitContainer/MarkdownEditor" method="OpenFile"]

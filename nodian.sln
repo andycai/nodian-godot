@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demo", "demo.csproj", "{A23322A6-CCA7-45A6-A92F-8CBD3FE9D173}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nodian", "nodian.csproj", "{A23322A6-CCA7-45A6-A92F-8CBD3FE9D173}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

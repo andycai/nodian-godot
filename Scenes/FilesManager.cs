@@ -27,7 +27,8 @@ public partial class FilesManager : PanelContainer
 
 	private string EnsureRootDirectory()
 	{
-		string documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+		// string documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+		string documentsPath = "/Users/andy";
 		string rootPath = Path.Combine(documentsPath, ROOT_DIRECTORY);
 
 		if (!Directory.Exists(rootPath))
@@ -66,6 +67,7 @@ public partial class FilesManager : PanelContainer
 			string itemPath = selectedItem.GetMetadata(0).AsString();
 			if (!string.IsNullOrEmpty(itemPath) && File.Exists(itemPath))
 			{
+				GD.Print($"Selected file: {itemPath}");
 				EmitSignal(SignalName.FileSelected, itemPath);
 			}
 		}
