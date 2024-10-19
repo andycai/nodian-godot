@@ -1,10 +1,12 @@
 using Godot;
-using static Godot.GD;
 using System.IO;
 using System.Linq;
 
 public partial class FilesManager : PanelContainer
 {
+	[Signal]
+	public delegate void FileSelectedEventHandler(string filePath);
+
 	private Tree _tree;
 	private TreeItem _root;
 	private const string ROOT_DIRECTORY = "nodian";
@@ -12,7 +14,7 @@ public partial class FilesManager : PanelContainer
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		Print("File manager ready");
+		GD.Print("File manager ready");
 
 		_tree = GetNode<VBoxContainer>("VBoxContainer").GetNode<Tree>("Tree");
 		_tree.HideRoot = true;
@@ -25,13 +27,11 @@ public partial class FilesManager : PanelContainer
 
 	private string EnsureRootDirectory()
 	{
-		string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+		string documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
 		string rootPath = Path.Combine(documentsPath, ROOT_DIRECTORY);
 
 		if (!Directory.Exists(rootPath))
-		{
 			Directory.CreateDirectory(rootPath);
-		}
 
 		return rootPath;
 	}
@@ -45,7 +45,7 @@ public partial class FilesManager : PanelContainer
 		{
 			var item = _tree.CreateItem(parent);
 			item.SetText(0, Path.GetFileName(directory));
-			item.SetIcon(0, GetThemeIcon("Folder", "EditorIcons"));
+			item.SetIcon(0, _tree.GetThemeIcon("Folder", "EditorIcons"));
 			PopulateTree(directory, item);
 		}
 
@@ -53,7 +53,7 @@ public partial class FilesManager : PanelContainer
 		{
 			var item = _tree.CreateItem(parent);
 			item.SetText(0, Path.GetFileName(file));
-			item.SetIcon(0, GetThemeIcon("File", "EditorIcons"));
+			item.SetIcon(0, _tree.GetThemeIcon("File", "EditorIcons"));
 			item.SetMetadata(0, file);
 		}
 	}
@@ -63,11 +63,10 @@ public partial class FilesManager : PanelContainer
 		TreeItem selectedItem = _tree.GetSelected();
 		if (selectedItem != null)
 		{
-			string itemPath = selectedItem.GetMetadata(0) as string;
+			string itemPath = selectedItem.GetMetadata(0).AsString();
 			if (!string.IsNullOrEmpty(itemPath) && File.Exists(itemPath))
 			{
-				// TODO: Implement file opening logic
-				Print($"Selected file: {itemPath}");
+				EmitSignal(SignalName.FileSelected, itemPath);
 			}
 		}
 	}

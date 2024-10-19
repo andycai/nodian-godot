@@ -7,6 +7,7 @@ public partial class MarkdownEditor : Control
     private TextEdit _editor;
     private RichTextLabel _preview;
     private string _currentFilePath;
+    private bool _hasUnsavedChanges = false;
 
     public override void _Ready()
     {
@@ -24,6 +25,8 @@ public partial class MarkdownEditor : Control
             string content = File.ReadAllText(filePath);
             _editor.Text = content;
             UpdatePreview(content);
+            _hasUnsavedChanges = false;
+            UpdateTitle();
         }
     }
 
@@ -31,7 +34,8 @@ public partial class MarkdownEditor : Control
     {
         string content = _editor.Text;
         UpdatePreview(content);
-        // TODO: Implement auto-save or save indicator
+        _hasUnsavedChanges = true;
+        UpdateTitle();
     }
 
     private void UpdatePreview(string markdownContent)
@@ -45,7 +49,19 @@ public partial class MarkdownEditor : Control
         if (!string.IsNullOrEmpty(_currentFilePath))
         {
             File.WriteAllText(_currentFilePath, _editor.Text);
-            // TODO: Update save indicator
+            _hasUnsavedChanges = false;
+            UpdateTitle();
+        }
+    }
+
+    private void UpdateTitle()
+    {
+        if (!string.IsNullOrEmpty(_currentFilePath))
+        {
+            string fileName = Path.GetFileName(_currentFilePath);
+            string title = fileName + (_hasUnsavedChanges ? "*" : "");
+            // TODO: Update the title of the tab or window
+            GD.Print($"File: {title}"); // Temporary, replace with actual title update
         }
     }
 }
