@@ -19,7 +19,8 @@ public partial class MarkdownEditor : Control
         _tabBar = GetNode<TabBar>("VBoxContainer/TabBar");
 
         _editor.TextChanged += OnEditorTextChanged;
-        _tabBar.TabClicked += OnTabClicked; // 修改这行
+        _tabBar.TabChanged += OnTabChanged;
+        _tabBar.TabClosePressed += OnTabClosePressed; // 添加这行
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -29,6 +30,11 @@ public partial class MarkdownEditor : Control
             if (keyEvent.Keycode == Key.S && keyEvent.CtrlPressed)
             {
                 SaveFile();
+                GetViewport().SetInputAsHandled();
+            }
+            else if (keyEvent.Keycode == Key.W && keyEvent.CtrlPressed)
+            {
+                CloseCurrentTab();
                 GetViewport().SetInputAsHandled();
             }
         }
@@ -41,14 +47,14 @@ public partial class MarkdownEditor : Control
         {
             if (!_openFiles.ContainsValue(filePath))
             {
-                _tabBar.AddTab(Path.GetFileName(filePath)); // 移除返回值赋值
-                int tabIndex = _tabBar.TabCount - 1; // 获取新添加的标签索引
+                _tabBar.AddTab(Path.GetFileName(filePath));
+                int tabIndex = _tabBar.TabCount - 1;
                 _openFiles[tabIndex] = filePath;
                 _tabBar.CurrentTab = tabIndex;
             }
             else
             {
-                int tabIndex = _openFiles.First(x => x.Value == filePath).Key; // 使用 First 而不是 FirstOrDefault
+                int tabIndex = _openFiles.First(x => x.Value == filePath).Key;
                 _tabBar.CurrentTab = tabIndex;
             }
 
@@ -96,11 +102,65 @@ public partial class MarkdownEditor : Control
         }
     }
 
-    private void OnTabClicked(long tabIndex) // 修改方法签名
+    private void OnTabChanged(long tabIndex)
     {
-        if (_openFiles.TryGetValue((int)tabIndex, out string filePath)) // 转换 long 为 int
+        if (_openFiles.TryGetValue((int)tabIndex, out string filePath))
         {
             OpenFile(filePath);
         }
+    }
+
+    public void CloseCurrentTab()
+    {
+        int currentTab = _tabBar.CurrentTab;
+        if (currentTab >= 0)
+        {
+            CloseFile(currentTab);
+        }
+    }
+
+    private void CloseFile(int tabIndex)
+    {
+        if (_openFiles.TryGetValue(tabIndex, out string filePath))
+        {
+            // TODO: 检查是否有未保存的更改，并提示用户保存
+
+            _openFiles.Remove(tabIndex);
+            _tabBar.RemoveTab(tabIndex);
+
+            // 更新剩余标签的索引
+            var updatedOpenFiles = new Dictionary<int, string>();
+            for (int i = 0; i < _tabBar.TabCount; i++)
+            {
+                if (_openFiles.TryGetValue(i, out string path))
+                {
+                    updatedOpenFiles[i] = path;
+                }
+            }
+            _openFiles = updatedOpenFiles;
+
+            // 如果关闭的是当前标签，切换到新的当前标签
+            if (_currentFilePath == filePath)
+            {
+                if (_tabBar.TabCount > 0)
+                {
+                    int newTabIndex = tabIndex >= _tabBar.TabCount ? _tabBar.TabCount - 1 : tabIndex;
+                    _tabBar.CurrentTab = newTabIndex;
+                    OpenFile(_openFiles[newTabIndex]);
+                }
+                else
+                {
+                    // 没有打开的文件了，清空编辑器
+                    _currentFilePath = null;
+                    _editor.Text = "";
+                    _preview.Text = "";
+                }
+            }
+        }
+    }
+
+    private void OnTabClosePressed(long tabIndex)
+    {
+        CloseFile((int)tabIndex);
     }
 }
