@@ -163,4 +163,13 @@ public partial class MarkdownEditor : Control
     {
         CloseFile((int)tabIndex);
     }
+
+    public void CloseAllFiles()
+    {
+        // 关闭所有打开的文件
+        while (_tabBar.TabCount > 0)
+        {
+            CloseFile(0);
+        }
+    }
 }

@@ -29,6 +29,9 @@ public partial class Application : Control
 
         // 调整 Tree 和 TabBar 的最小高度
         AdjustControlSizes();
+
+        // 连接窗口关闭请求信号
+        GetTree().Root.CloseRequested += OnCloseRequested;
     }
 
     private void SetScaledIcon(Theme theme, string iconName, string iconGroup, int size)
@@ -56,5 +59,41 @@ public partial class Application : Control
         // 调整 TabBar 的最小高度
         var tabBar = markdownEditor.GetNode<TabBar>("VBoxContainer/TabBar");
         tabBar.CustomMinimumSize = new Vector2(0, 40);
+    }
+
+    private void OnCloseRequested()
+    {
+        try
+        {
+            // 在这里可以添加保存未保存文件的逻辑
+            var markdownEditor = GetNode<MarkdownEditor>("HSplitContainer/MarkdownEditor");
+            markdownEditor.CloseAllFiles();
+
+            // 清理资源
+            CleanupResources();
+
+            // 退出应用
+            GetTree().Quit();
+        }
+        catch (Exception e)
+        {
+            GD.PrintErr("Error during application close: " + e.Message);
+            // 强制退出
+            GetTree().Quit();
+        }
+    }
+
+    private void CleanupResources()
+    {
+        // 在这里添加任何需要在关闭时清理的资源
+        // 例如：关闭文件流、释放内存等
+    }
+
+    public override void _Notification(int what)
+    {
+        if (what == NotificationWMCloseRequest)
+        {
+            OnCloseRequested();
+        }
     }
 }
