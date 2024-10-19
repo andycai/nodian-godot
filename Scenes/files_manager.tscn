@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://dj4u6kbp6yj40"]
+
+[ext_resource type="Script" path="res://Scenes/FilesManager.cs" id="1_a8f4j"]
+
+[node name="FilesManager" type="PanelContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_a8f4j")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Tree" type="Tree" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

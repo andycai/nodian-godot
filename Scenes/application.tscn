@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="..."]
+
+[ext_resource type="PackedScene" uid="..." path="res://Scenes/files_manager.tscn" id="1_..."]
+[ext_resource type="PackedScene" uid="..." path="res://Scenes/MarkdownEditor.tscn" id="2_..."]
+
+[node name="Application" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FilesManager" parent="HSplitContainer" instance=ExtResource("1_...")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+
+[node name="MarkdownEditor" parent="HSplitContainer" instance=ExtResource("2_...")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8

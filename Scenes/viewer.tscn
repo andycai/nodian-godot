@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://b18m1fax28aka"]
+
+[node name="Viewer" type="PanelContainer"]
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 5.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+
+[node name="HFlowContainer" type="HFlowContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="ScrollContainer/HFlowContainer"]
+custom_minimum_size = Vector2(120, 240)
+layout_mode = 2
